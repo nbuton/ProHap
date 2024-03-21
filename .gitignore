@@ -10,3 +10,9 @@ src/*/__pycache__
 .vscode
 *.log
 config.yaml
+*.vcf
+*.fasta
+*.fa
+*.tsv
+*.csv
+personal_scripts/*
