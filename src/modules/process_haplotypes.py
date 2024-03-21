@@ -168,7 +168,7 @@ def process_haplotypes(
                 "sequence"
             ]  # reference cDNA
             mutated_cdna = Seq(cdna_sequence)  # cDNA to aggregate mutations
-            print("mutated_cdna:", mutated_cdna[:100])
+
             sequence_length_diff = 0  # cummulative difference between the length of reference and haplotype -> to place mutations correctly in case of preceding indels
 
             # boolean - are we on a reverse strand?
@@ -251,8 +251,6 @@ def process_haplotypes(
             for change in all_changes:
                 ref_allele = re.split("\d+", change)[1].split(">")[0][1:]
                 alt_allele = re.split("\d+", change)[1].split(">")[1]
-                print("change: ref_allele:", ref_allele)
-                print("change: alt_allele:", alt_allele)
 
                 # in case the allele is fully deleted
                 if ref_allele == "-":
@@ -266,7 +264,6 @@ def process_haplotypes(
                     alt_allele = Seq(alt_allele)
 
                 dna_location = int(re.split("[a-zA-Z\*]+", change)[0][:-1])
-                print("dna_location:", dna_location)
 
                 # compute the location in the RNA sequence
                 # does any of the allele sequences intersect a splicing site? => truncate if so
@@ -350,7 +347,7 @@ def process_haplotypes(
             for ch_idx, change in enumerate(all_changes):
                 ref_allele = ref_alleles[ch_idx]
                 alt_allele = alt_alleles[ch_idx]
-                print("alt_allele:", alt_allele)
+
                 ref_len = len(ref_allele)
                 alt_len = len(alt_allele)
 
