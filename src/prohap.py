@@ -233,11 +233,13 @@ print(("Chr " + args.chromosome + ":"), "Assigning annotations to transcripts.")
 
 # create a list of transcript features from the annotation db
 all_transcripts = []
-
+fichier = open("not_found_transcript.txt")
 for transcript_id in transcript_list:
     try:
         feature = annotations_db[transcript_id]
     except:
+        print(transcript_id, "NOT FOUND")
+        fichier.write(transcript_id + "\n")
         continue
     if args.require_start:  # start codon annotation is required - check if present
         start_codons = [
@@ -250,7 +252,7 @@ for transcript_id in transcript_list:
             all_transcripts.append(feature)
     else:
         all_transcripts.append(feature)
-
+fichier.close()
 all_transcripts.sort(key=lambda x: x.start)
 transcript_list = [feature.id for feature in all_transcripts]
 
