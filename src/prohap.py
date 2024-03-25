@@ -233,13 +233,14 @@ print(("Chr " + args.chromosome + ":"), "Assigning annotations to transcripts.")
 
 # create a list of transcript features from the annotation db
 all_transcripts = []
-fichier = open("not_found_transcript.txt")
 for transcript_id in transcript_list:
     try:
         feature = annotations_db[transcript_id]
     except:
         print(transcript_id, "NOT FOUND")
+        fichier = open("not_found_transcript.txt", "a")
         fichier.write(transcript_id + "\n")
+        fichier.close()
         continue
     if args.require_start:  # start codon annotation is required - check if present
         start_codons = [
@@ -250,9 +251,12 @@ for transcript_id in transcript_list:
         ]  # there should be only one, but just in case...
         if len(start_codons) > 0:
             all_transcripts.append(feature)
+        else:
+            fichier = open("not_found_transcript.txt", "a")
+            fichier.write(transcript_id + "\n")
+            fichier.close()
     else:
         all_transcripts.append(feature)
-fichier.close()
 all_transcripts.sort(key=lambda x: x.start)
 transcript_list = [feature.id for feature in all_transcripts]
 
@@ -289,6 +293,7 @@ else:
         samples_df,
     )
 
+    gene_haplo_df.to_csv("gene_haplo_df.csv")
     # remove the temporary files
     for transcript_id in transcript_list:
         os.remove(args.tmp_dir + "/" + transcript_id + ".tsv")

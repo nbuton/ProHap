@@ -15,4 +15,5 @@ config.yaml
 *.fa
 *.tsv
 *.csv
+*.txt
 personal_scripts/*

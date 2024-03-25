@@ -1,3 +1,4 @@
+import os
 import re
 from multiprocessing import Pool
 import pandas as pd
@@ -156,6 +157,9 @@ def process_haplotypes(
         local_result_sequences = (
             []
         )  # way to avoid duplicate sequences -> access sequences by hash, aggregate haplotype IDs that correspond
+        dico_mutated_cDNA = (
+            {}
+        )  # Dict that contain all cDNA with their respective mutation -> Usefull to extract ncRNA mutated sequence
 
         for index, row in transcript_haplotypes.iterrows():
             transcript_id = row["TranscriptID"].split(".")[0]
@@ -398,6 +402,13 @@ def process_haplotypes(
                 )
                 sequence_length_diff += alt_len - ref_len
 
+            # Save the mutated cDNA
+            haplotypeID = id_prefix + "_" + hex(index)[2:]
+            if haplotypeID in dico_mutated_cDNA.keys():
+                raise RuntimeError("Haplotype ID allready present in dico_mutated_cDNA")
+
+            dico_mutated_cDNA[haplotypeID] = mutated_cdna
+
             # skip in case of misaligned change
             if not validity_check:
                 continue
@@ -503,8 +514,6 @@ def process_haplotypes(
             )
             if len(spl_junctions_affected_str) == 0:
                 spl_junctions_affected_str = "-"
-
-            haplotypeID = id_prefix + "_" + hex(index)[2:]
 
             # check the reading frame, if possible, and translate
             if reading_frame > -1:
@@ -729,7 +738,7 @@ def process_haplotypes(
             seq for seq in local_result_sequences if len(seq["haplotypes"]) > 0
         ]
 
-        return [result_table, local_result_sequences]
+        return [result_table, local_result_sequences, dico_mutated_cDNA]
 
     # aggregated_results = list(map(process_transcript_haplotypes, all_transcripts))
     with Pool(threads) as p:
@@ -737,12 +746,20 @@ def process_haplotypes(
 
         result_data = []
         result_sequences = []
+        result_cDNA = {}
 
         for result_point in aggregated_results:
-            if len(result_point) == 2:
+            if len(result_point) == 3:
                 result_data = result_data + list(result_point[0])
                 result_sequences = result_sequences + result_point[1]
+                result_cDNA.update(result_point[2])
 
+        df_cDNA = pd.DataFrame.from_dict(
+            {"ascession": list(result_cDNA.keys()), "cDNA": list(result_cDNA.values())}
+        )
+        if not os.path.exists("cDNA_res/"):
+            os.mkdir("cDNA_res/")
+        df_cDNA.to_csv("cDNA_res/" + chromosome + ".csv")
         result_df = pd.DataFrame(columns=result_columns, data=result_data)
 
         return [result_df, result_sequences]

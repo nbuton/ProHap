@@ -169,7 +169,8 @@ def preprocess_line(line):
 # annotations_db: FeatureDB of the GTF file
 # min_af: threshold allele frequency (float)
 def parse_vcf(all_transcripts, vcf_file, annotations_db, min_af, tmp_dir):
-
+    if len(all_transcripts) == 0:
+        raise RuntimeError("No transcript for this chromosome so this doesn't work")
     # read the header of the VCF - keep only the last line of the header
     VCF_header = ""
 
