@@ -328,8 +328,6 @@ def get_gene_haplotypes(
                 x_autosomal_transcripts.append(elem["id"])
 
     result_df = pd.DataFrame(columns=result_columns, data=result_data)
-    print("result_df:")
-    print(result_df)
 
     # count frequencies taking into account the number of removed samples in the transcript, and sex in case of X chromosome
     def count_freq(row):

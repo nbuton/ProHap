@@ -238,10 +238,11 @@ for transcript_id in transcript_list:
         feature = annotations_db[transcript_id]
     except Exception as e:
         print(e)
-        raise RuntimeError(
-            "Transcript %s not found in this chromosome verify that it is present in the gtf",
-            transcript_id,
+        print(
+            f"Transcript {transcript_id} not found in this chromosome verify that it is present in the gtf"
         )
+        print("Maybe raise error here?")
+        continue
     if args.require_start:  # start codon annotation is required - check if present
         start_codons = [
             sc
@@ -293,7 +294,8 @@ else:
         samples_df,
     )
 
-    gene_haplo_df.to_csv("gene_haplo_df.csv")  # -> Do I need this?
+    folder_res = "/".join(args.output_file.split("/")[:-1])
+    gene_haplo_df.to_csv(folder_res + "/gene_haplo_chr_" + args.chromosome + "_df.csv")
     # remove the temporary files
     for transcript_id in transcript_list:
         os.remove(args.tmp_dir + "/" + transcript_id + ".tsv")
@@ -316,6 +318,7 @@ else:
         args.haplo_id_prefix,
         args.force_rf,
         args.threads,
+        folder_res,
         args.min_foo,
         args.min_hap_count,
         args.ignore_UTR,

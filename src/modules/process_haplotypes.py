@@ -90,6 +90,7 @@ def process_haplotypes(
     id_prefix,
     force_rf,
     threads,
+    folder_res,
     min_foo=-1,
     min_count=0,
     ignore_UTR=True,
@@ -163,10 +164,6 @@ def process_haplotypes(
 
         for index, row in transcript_haplotypes.iterrows():
             transcript_id = row["TranscriptID"].split(".")[0]
-
-            # Check if any mutations are present
-            if row["Changes"] == "REF":
-                continue
 
             cdna_sequence = current_transcript["fasta_element"][
                 "sequence"
@@ -249,6 +246,9 @@ def process_haplotypes(
             start_lost = False
             validity_check = True
 
+            # Check if any mutations are present
+            if row["Changes"] == "REF":
+                continue
             # iterate through changes first time, check if start codon is lost,
             # adjust the position of the start codon if shifted (i.e. inframe indel in 5' UTR)
             # remember alleles, locations on DNA and RNA
@@ -757,9 +757,10 @@ def process_haplotypes(
         df_cDNA = pd.DataFrame.from_dict(
             {"ascession": list(result_cDNA.keys()), "cDNA": list(result_cDNA.values())}
         )
-        if not os.path.exists("cDNA_res/"):
-            os.mkdir("cDNA_res/")
-        df_cDNA.to_csv("cDNA_res/" + chromosome + ".csv")
+        cdna_folder = folder_res + "/cDNA_res/"
+        if not os.path.exists(cdna_folder):
+            os.mkdir(cdna_folder)
+        df_cDNA.to_csv(cdna_folder + chromosome + ".csv")
         result_df = pd.DataFrame(columns=result_columns, data=result_data)
 
         return [result_df, result_sequences]

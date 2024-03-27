@@ -289,15 +289,12 @@ rule added_fasta_remove_stop:
 
 rule mix_with_reference_proteome:
     input:
-        in1="data/fasta/ensembl_reference_proteinDB_" + str(config['ensembl_release']) + "_clean.fa",
-        in2="data/fasta/crap_tagged.fa",
         in3=expand('{proxy}', proxy=["results/variants_all_clean.fa"] if config["use_ProVar"] else []),
         in4=expand('{proxy}', proxy=["results/haplo_all_clean.fa"] if config["use_ProHap"] else []),
         in5=expand('{proxy}', proxy=["results/haplo_added_clean.fa"] if config["add_existing_haplo"] else []),
     output:
         temp("results/ref_contam_vcf_haplo_all_clean.fa")		
     run:
-        shell("cat {input.in1} {input.in2} > {output}; ")
         if config["use_ProVar"]:
             shell("cat {input.in3} >> {output}")
         if config["use_ProHap"]:

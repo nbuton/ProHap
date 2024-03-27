@@ -54,9 +54,11 @@ def add_variants_to_transcripts(
         # check all transcripts in the queue
         if valid:
             vcf_id = vcf_file_line.split(maxsplit=3)[2]
+            # print("vcf_file_line:", vcf_file_line[:50])
+            # print("vcf_id:", vcf_id)
 
             if vcf_id == ".":
-                # add an identifier = line cound
+                # add an identifier = line count
                 vcf_file_line = (
                     "\t".join(vcf_file_line.split(maxsplit=2)[:2])
                     + "\t"
@@ -64,7 +66,7 @@ def add_variants_to_transcripts(
                     + "\t"
                     + vcf_file_line.split(maxsplit=3)[3]
                 )
-
+            # print("vcf_file_line2:", vcf_file_line[:50])
             for transcript_entry in transcript_queue:
 
                 # check if the snp belongs to any of the exons
