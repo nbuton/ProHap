@@ -246,6 +246,17 @@ rule compute_haplotypes:
         "-acc_prefix enshap_{wildcards.chr} -id_prefix haplo_chr{wildcards.chr} -require_start {params.require_start} -ignore_UTR {params.ignore_UTR} -skip_start_lost {params.skip_start_lost} "
         "-threads {params.max_cores} -log {params.log_file} -tmp_dir {params.tmp_dir} -output_csv {output.csv} -output_fasta {output.fasta} "
 
+rule move_cDNA_and_haplo:
+    input:
+        cDNA_res="results/cDNA_res/"
+        gene_haplo_res="results/gene_haplo/"
+    output:
+        config["output_folder"]
+    shell:
+        "mv {cDNA_res} {output}"
+        "mv {gene_haplo_res} {output}"
+
+
 rule merge_haplo_tables:
     input:
         expand("results/" + WORKING_DIR_NAME_HAPLO + "/haplo_chr{chr}.tsv", chr=CHROMOSOMES)

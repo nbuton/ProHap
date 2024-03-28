@@ -294,8 +294,13 @@ else:
         samples_df,
     )
 
-    folder_res = "/".join(args.output_file.split("/")[:-1])
-    gene_haplo_df.to_csv(folder_res + "/gene_haplo_chr_" + args.chromosome + "_df.csv")
+    folder_res = "/".join(args.output_file.split("/")[:-2])
+    haplo_folder = folder_res + "/gene_haplo/"
+    if not os.path.exists(haplo_folder):
+        os.mkdir(haplo_folder)
+    gene_haplo_df.to_csv(
+        haplo_folder + "/gene_haplo_chr_" + args.chromosome + "_df.csv"
+    )
     # remove the temporary files
     for transcript_id in transcript_list:
         os.remove(args.tmp_dir + "/" + transcript_id + ".tsv")
