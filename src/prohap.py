@@ -302,8 +302,8 @@ else:
         haplo_folder + "/gene_haplo_chr_" + args.chromosome + "_df.csv"
     )
     # remove the temporary files
-    for transcript_id in transcript_list:
-        os.remove(args.tmp_dir + "/" + transcript_id + ".tsv")
+    # for transcript_id in transcript_list:
+    #     os.remove(args.tmp_dir + "/" + transcript_id + ".tsv")
 
     # filter the haplotypes by FoO -> CHANGE: filter only after processing, some haplotypes can be merged
     # gene_haplo_df = gene_haplo_df[gene_haplo_df['Frequency'] >= args.min_foo]
