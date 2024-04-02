@@ -145,7 +145,6 @@ def preprocess_line(line):
             invalid_gts = list(range(1, 100))
             invalid_gts.remove(i + 1)
             GTs = line.split(maxsplit=9)[-1]
-            GTs = GTs.replace("/", "|")
             for gt_id in invalid_gts:
                 GTs = GTs.replace(str(gt_id) + "|", "0|")
                 GTs = GTs.replace("|" + str(gt_id), "|0")

@@ -172,7 +172,6 @@ def get_gene_haplotypes(
 
             # store indices of rows for which the alternative allele has been found -> create a temporary string ID of the haplotype
             vals = vcf_df[indiv].to_list()
-            vals = [v.replace("/", "|").split(":")[0] for v in vals]
 
             # sanity check - correct separator between paternal / maternal chromosome
             err_rows = ",".join(
